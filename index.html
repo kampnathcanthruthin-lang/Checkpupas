@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ระบบเช็คชื่อหน้าเสาธง - รร.แม่สะเรียง "บริพัตรศึกษา"</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            font-family: 'Sarabun', sans-serif;
+            background: linear-gradient(135deg, #134e4a 0%, #064e3b 40%, #854d0e 100%);
+            color: #f8fafc;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ===== NAVBAR ===== */
+        .school-navbar {
+            background: rgba(6, 78, 59, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(234, 179, 8, 0.4);
+            padding: 10px 15px;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo-img {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            border: 2px solid #eab308;
+            object-fit: cover;
+            background: #fff;
+            flex-shrink: 0;
+        }
+
+        /* ===== CONTAINER & CARDS ===== */
+        .main-container {
+            width: 100%;
+            max-width: 550px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            padding: 12px 15px;
+            margin-bottom: 10px;
+        }
+
+        /* ===== FORM INPUTS ===== */
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 7px 12px;
+            font-size: 14px;
+            color: #0f172a;
+        }
+        .form-control:focus, .form-select:focus {
+            background: #ffffff;
+            border-color: #eab308;
+            box-shadow: 0 0 0 0.2rem rgba(234, 179, 8, 0.25);
+        }
+
+        /* ===== DYNAMIC PILL BUTTON ===== */
+        .cta-btn {
+            position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+            border: none; background: none; cursor: pointer; border-radius: 9999px; padding: 2px; width: 100%;
+            margin-top: 4px;
+        }
+        .cta-btn-bg {
+            position: absolute; inset: 0; border-radius: 9999px;
+            background: linear-gradient(90deg, #16a34a, #ca8a04);
+            z-index: 0; transition: opacity 0.3s ease;
+        }
+        .cta-btn:hover .cta-btn-bg { opacity: 0.9; }
+        .cta-btn-text {
+            position: relative; z-index: 1; color: #ffffff; font-weight: 600; font-size: 15px;
+            padding: 8px 16px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* ===== TABLE ===== */
+        .table-responsive {
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .table-custom { color: #f8fafc; margin-bottom: 0; font-size: 13px; }
+        .table-custom th {
+            background: rgba(234, 179, 8, 0.25);
+            color: #fef08a; border-bottom: 2px solid rgba(234, 179, 8, 0.4);
+            padding: 5px 8px;
+        }
+        .table-custom td {
+            padding: 5px 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            vertical-align: middle;
+        }
+
+        /* ===== BADGES ===== */
+        .badge-status { padding: 2px 6px; border-radius: 50px; font-weight: 500; font-size: 11px; white-space: nowrap; }
+        .bg-on-time { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid #22c55e; }
+        .bg-late { background: rgba(234, 179, 8, 0.2); color: #fde047; border: 1px solid #eab308; }
+        .bg-leave { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }
+        .bg-absent { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+    </style>
+</head>
+<body>
+
+<nav class="school-navbar d-flex align-items-center">
+    <div class="d-flex align-items-center gap-2">
+        <img src="https://i.imgur.com/vHqQd4j.png" alt="โลโก้โรงเรียน" class="logo-img" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png'">
+        <div>
+            <h6 class="mb-0 fw-bold text-warning" style="font-size: 14px;">รร.แม่สะเรียง "บริพัตรศึกษา"</h6>
+            <small class="text-light opacity-75" style="font-size: 10px;">เช็คชื่อเสาธง ม.6/8</small>
+        </div>
+    </div>
+</nav>
+
+<div class="main-container">
+    <div class="glass-card">
+        <h6 class="fw-bold mb-2 text-center text-warning" style="font-size: 14px;">🚩 บันทึกการเข้าแถว</h6>
+        <form id="checkinForm">
+            <div class="mb-2">
+                <label class="form-label text-light fw-medium small mb-1" style="font-size: 11px;">รหัสนักเรียน / เลขที่</label>
+                <input type="text" class="form-control" id="studentId" placeholder="กรอกรหัสนักเรียน..." required autofocus>
+            </div>
+            <div class="mb-2">
+                <label class="form-label text-light fw-medium small mb-1" style="font-size: 11px;">สถานะการมาเรียน</label>
+                <select class="form-select" id="status">
+                    <option value="มาทันเวลา">✅ มาทันเวลา</option>
+                    <option value="มาสาย">⚠️ มาสาย</option>
+                    <option value="ลา">🟦 ลา (มีใบลา)</option>
+                    <option value="ขาด">❌ ขาดเรียน</option>
+                </select>
+            </div>
+            <button type="submit" id="submitBtn" class="cta-btn">
+                <span class="cta-btn-bg"></span>
+                <span class="cta-btn-text">บันทึกข้อมูลเข้าสู่ระบบ</span>
+            </button>
+        </form>
+        <div id="alertMsg" class="mt-2"></div>
+    </div>
+
+    <div class="glass-card">
+        <h6 class="fw-bold mb-1 text-warning" style="font-size: 13px;">📊 รายงานวันนี้</h6>
+        <div class="table-responsive">
+            <table class="table table-custom">
+                <thead>
+                    <tr>
+                        <th>เวลา</th>
+                        <th>รหัส</th>
+                        <th>สถานะ</th>
+                    </tr>
+                </thead>
+                <tbody id="resultTable">
+                    <tr><td colspan="3" class="text-center text-muted">กำลังโหลด...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ⚠️ อย่าลืมใส่ URL ของ Web App จาก Google Apps Script ตรงนี้
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzd16e-1B4a0N2CLzUcgPGEMstrKT--dgrL0EyRDQnPC-RlhKHGU2SkCIzM_vW1rSCf-g/exec";
+
+    document.getElementById('checkinForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const id = document.getElementById('studentId').value.trim();
+        const status = document.getElementById('status').value;
+        const btn = document.getElementById('submitBtn');
+        const alert = document.getElementById('alertMsg');
+
+        btn.style.opacity = '0.6';
+        btn.disabled = true;
+
+        fetch(WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify({ studentId: id, status: status })
+        })
+        .then(res => res.json())
+        .then(res => {
+            alert.innerHTML = `<div class="alert alert-success bg-success text-white border-0 py-1 px-2 small">✅ บันทึกสำเร็จ: ${id} (${status})</div>`;
+            document.getElementById('studentId').value = '';
+            document.getElementById('studentId').focus();
+            loadData();
+        })
+        .catch(() => {
+            alert.innerHTML = `<div class="alert alert-danger bg-danger text-white border-0 py-1 px-2 small">❌ เกิดข้อผิดพลาด</div>`;
+        })
+        .finally(() => {
+            btn.style.opacity = '1';
+            btn.disabled = false;
+        });
+    });
+
+    function loadData() {
+        if(!WEB_APP_URL || WEB_APP_URL.includes("วาง_URL")) return;
+        fetch(WEB_APP_URL)
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById('resultTable');
+            tbody.innerHTML = '';
+            if(!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center opacity-75">ยังไม่มีข้อมูลวันนี้</td></tr>`;
+                return;
+            }
+            data.reverse().forEach(row => {
+                let tr = document.createElement('tr');
+                let timeStr = new Date(row.timestamp).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+                
+                let badgeClass = 'bg-on-time';
+                if(row.status === 'มาสาย') badgeClass = 'bg-late';
+                else if(row.status === 'ลา') badgeClass = 'bg-leave';
+                else if(row.status === 'ขาด') badgeClass = 'bg-absent';
+
+                tr.innerHTML = `
+                    <td>${timeStr}</td>
+                    <td class="fw-bold">${row.studentId}</td>
+                    <td><span class="badge-status ${badgeClass}">${row.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }).catch(err => console.error(err));
+    }
+
+    loadData();
+</script>
+</body>
+</html>
